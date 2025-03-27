@@ -86,4 +86,17 @@ class User
             return false;
         } 
     }
+
+    // Posodobi geslo uporabnika
+    public function updatePassword($new_password) {
+        $db = Db::getInstance();
+        $hashed = password_hash($new_password, PASSWORD_DEFAULT);
+        $id = $this->id;
+        $query = "UPDATE users SET password='$hashed' WHERE id=$id LIMIT 1;";
+        if ($db->query($query)) {
+            $this->password = $hashed;
+            return true;
+        }
+        return false;
+    }  
 }

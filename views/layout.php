@@ -20,7 +20,9 @@
             if(isset($_SESSION["USER_ID"])){
                 ?>
                 <li class="nav-item"><a href="/articles/create" class="nav-link">Objavi novico</a></li>
+                <li class="nav-item"><a href="/articles/my_articles" class="nav-link">Moje novice</a></li> <!-- Dodano -->	
                 <li class="nav-item"><a href="/users/edit" class="nav-link">Uredi profil</a></li>
+                <li class="nav-item"><a href="/users/profile" class="nav-link">Moj profil</a></li>
                 <li class="nav-item"><a href="/auth/logout" class="nav-link">Odjava</a></li>
                 <?php
             } else{
@@ -46,6 +48,7 @@
                 if(isset($_SESSION["USER_ID"])){
                     ?>
                     <li class="nav-item"><a href="/articles/create" class="nav-link px-2 text-body-secondary">Objavi novico</a></li>
+                    <li class="nav-item"><a href="/articles/my_articles" class="nav-link px-2 text-body-secondary">Moje novice</a></li> <!-- Dodano -->	
                     <li class="nav-item"><a href="/users/edit" class="nav-link px-2 text-body-secondary">Uredi profil</a></li>
                     <li class="nav-item"><a href="/auth/logout" class="nav-link px-2 text-body-secondary">Odjava</a></li>
                     <?php
