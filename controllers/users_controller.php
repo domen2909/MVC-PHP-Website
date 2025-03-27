@@ -87,4 +87,68 @@ class users_controller
         }
         die();
     }
+
+    public function profile()
+    {
+        require_once('models/articles.php');
+        require_once('models/comments.php');
+    
+        // Zahtevaj, da je uporabnik prijavljen
+        if (!isset($_SESSION["USER_ID"])) {
+            header("Location: index.php?controller=auth&action=login");
+            exit();
+        }
+    
+        // Preveri, ali je v URL-ju podan "id"
+        if (isset($_GET["id"])) {
+            $userId = intval($_GET["id"]);  // profil avtorja novice
+        } else {
+            $userId = $_SESSION["USER_ID"]; // če ni id, prikaži profil prijavljenega
+        }
+    
+        // Naloži podatke o tem uporabniku
+        $user = User::find($userId);
+        if (!$user) {
+            die("Ta uporabnik ne obstaja.");
+        }
+    
+        // Pridobi novice tega uporabnika
+        $articles = Article::findByUser($user->id);
+        $articleCount = count($articles);
+    
+        // Pridobi število komentarjev
+        $commentCount = Comment::countByUser($user->id);
+    
+        // Vključi pogled za profil
+        require_once('views/users/profile.php');
+    }
+    
+
+    // Nova metoda za spremembo gesla
+    public function update_password() {
+        if (!isset($_SESSION["USER_ID"])) {
+            header("Location: index.php?controller=auth&action=login");
+            exit();
+        }
+        $user = User::find($_SESSION["USER_ID"]);
+        if (empty($_POST["old_password"]) || empty($_POST["new_password"]) || empty($_POST["repeat_new_password"])) {
+            header("Location: index.php?controller=users&action=edit&error=password_empty");
+            exit();
+        }
+        if ($_POST["new_password"] !== $_POST["repeat_new_password"]) {
+            header("Location: index.php?controller=users&action=edit&error=password_mismatch");
+            exit();
+        }
+        if (!password_verify($_POST["old_password"], $user->password)) {
+            header("Location: index.php?controller=users&action=edit&error=incorrect_old_password");
+            exit();
+        }
+        if ($user->updatePassword($_POST["new_password"])) {
+            header("Location: index.php?controller=users&action=profile&success=password_changed");
+            exit();
+        } else {
+            header("Location: index.php?controller=users&action=edit&error=password_update_failed");
+            exit();
+        }
+    }
 }
